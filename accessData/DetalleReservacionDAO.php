@@ -39,7 +39,7 @@ class DetalleReservacionDAO {
     }
 
     public function insertar(DetalleReservacionH $objeto) {
-        $sql = "INSERT INTO u484426513_ms225.detalleReservacionH(idReservacion, idHabitacion) VALUES (?, ?)";
+        $sql = "INSERT INTO u484426513_ms225.detalleReservacionh(idReservacion, idHabitacion) VALUES (?, ?)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             $objeto->idReservacion,
