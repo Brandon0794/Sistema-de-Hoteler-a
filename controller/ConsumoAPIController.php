@@ -44,7 +44,8 @@ class ConsumoApiController {
 
             case 'PUT':
                 // Modificar consumo
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 if (!isset($datos['idConsumo'], $datos['idReservacion'], $datos['idServicio'], $datos['cantidad'], $datos['fecha'])) {
                     echo json_encode(["error" => "Datos incompletos para modificar"]);

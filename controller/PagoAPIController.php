@@ -35,7 +35,8 @@ class PagoAPIController {
                 break;
 
             case 'PUT':
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 // Validar que los datos requeridos esten presentes
                 if (!isset($datos['idPago']) || !isset($datos['idReservacion']) || !isset($datos['monto']) || !isset($datos['metodoPago']) || !isset($datos['fechaPago'])) {

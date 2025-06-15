@@ -37,7 +37,8 @@ class TipoHabitacionAPIController {
 
             case 'PUT':
                 // Actualizar registro existente
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 // Validar campos requeridos
                 if (!isset($datos['idTipo']) || !isset($datos['nombre']) || !isset($datos['descripcion'])) {

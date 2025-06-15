@@ -34,7 +34,8 @@ class MantenimientoHabitacionAPIController {
                 break;
 
             case 'PUT':
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 // Validar que los datos requeridos esten presentes
                 if (!isset($datos['idMantenimiento']) || !isset($datos['idHabitacion']) || !isset($datos['descripcion']) || !isset($datos['fecha'])) {

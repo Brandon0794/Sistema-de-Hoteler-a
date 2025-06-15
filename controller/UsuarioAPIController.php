@@ -39,7 +39,8 @@ class UsuarioAPIController {
 
             case 'PUT':
                 // Actualizar usuario existente
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 // Validar campos requeridos
                 if (!isset($datos['idUsuario']) || !isset($datos['nombreUsuario']) || !isset($datos['claveHash']) || !isset($datos['rol']) || !isset($datos['estado'])) {

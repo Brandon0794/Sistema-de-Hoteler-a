@@ -43,6 +43,7 @@ class DetalleReservacionAPIController {
             case 'PUT':
                 // Modificar detalle existente
                 $datos = json_decode(file_get_contents("php://input"), true);
+                
 
                 if (!isset($datos['idDetalle'], $datos['idReservacion'], $datos['idHabitacion'])) {
                     echo json_encode(["error" => "Faltan datos para modificar"]);

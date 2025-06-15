@@ -37,7 +37,8 @@ class ServicioExtraAPIController {
 
             case 'PUT':
                 // Actualizar servicio extra
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 // Validar que existan los campos requeridos
                 if (!isset($datos['idServicio']) || !isset($datos['nombre']) || !isset($datos['descripcion'])) {

@@ -39,7 +39,7 @@ class ReservacionAPIController {
 
             case 'PUT':
                 // Actualizar reservacion
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
 
                 // Validar que existan los campos requeridos
                 if (!isset($datos['idReservacion']) || !isset($datos['idCliente']) || !isset($datos['fechaInicio']) || !isset($datos['fechaFin']) || !isset($datos['estado'])) {

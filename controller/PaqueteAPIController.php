@@ -39,7 +39,8 @@ class PaqueteAPIController {
 
             case 'PUT':
                 // Actualizar paquete
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 // Validar que existan todos los datos requeridos
                 if (!isset($datos['idPaquete']) || !isset($datos['nombre']) || !isset($datos['descripcion']) || !isset($datos['precio'])) {
