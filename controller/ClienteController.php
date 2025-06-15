@@ -39,6 +39,7 @@ class ClienteController{
 
 }
 
+// MANEJO PRUEBA 
 if ( $_SERVER['REQUEST_METHOD'] == 'POST'){
 
 

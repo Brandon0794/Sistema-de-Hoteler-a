@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__.'/../accessData/ClientesDAO.php';
-
+require_once __DIR__.'/../model/ClienteH.php';
 
 class ClientesApiController{
 
