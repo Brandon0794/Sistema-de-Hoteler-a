@@ -6,7 +6,7 @@ class PagoH {
     public $metodoPago;
     public $fechaPago;
 
-    public function __construct($idPago, $idReservacion, $monto, $metodoPago, $fechaPago) {
+    public function __construct($idPago = null, $idReservacion = null, $monto = null, $metodoPago = null, $fechaPago = null) {
         $this->idPago = $idPago;
         $this->idReservacion = $idReservacion;
         $this->monto = $monto;

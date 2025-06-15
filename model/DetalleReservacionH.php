@@ -4,7 +4,7 @@ class DetalleReservacionH {
     public $idReservacion;
     public $idHabitacion;
 
-    public function __construct($idDetalle, $idReservacion, $idHabitacion) {
+    public function __construct($idDetalle = null, $idReservacion = null, $idHabitacion = null) {
         $this->idDetalle = $idDetalle;
         $this->idReservacion = $idReservacion;
         $this->idHabitacion = $idHabitacion;

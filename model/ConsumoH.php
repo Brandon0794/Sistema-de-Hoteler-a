@@ -6,7 +6,7 @@ class ConsumoH {
     public $cantidad;
     public $fecha;
 
-    public function __construct($idConsumo, $idReservacion, $idServicio, $cantidad, $fecha ) {
+    public function __construct($idConsumo = null, $idReservacion = null, $idServicio = null, $cantidad = null, $fecha = null) {
         $this->idConsumo = $idConsumo;
         $this->idReservacion = $idReservacion;
         $this->idServicio = $idServicio;

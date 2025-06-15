@@ -5,7 +5,7 @@ class MantenimientoHabitacionH {
     public $descripcion;
     public $fecha;
 
-    public function __construct($idMantenimiento, $idHabitacion, $descripcion, $fecha) {
+    public function __construct($idMantenimiento = null, $idHabitacion = null, $descripcion = null, $fecha = null) {
         $this->idMantenimiento = $idMantenimiento;
         $this->idHabitacion = $idHabitacion;
         $this->descripcion = $descripcion;
