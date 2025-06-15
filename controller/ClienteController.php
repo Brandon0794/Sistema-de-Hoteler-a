@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__.'/../accessData/ClientesDAO.php';
-
+require_once __DIR__.'/../model/ClienteH.php';
 //require_once _DIR_.'/../accessData/ClientesDAO.php';
  // requiere one dir debe cambiarse. se supone
 
@@ -26,6 +26,15 @@ class ClienteController{
 
     public function insertar(ClienteH $objeto){
         return $this->dao->insertar($objeto);
+    }
+
+    
+    public function modificar(ClienteH $objeto) {
+        return $this->dao->modificar($objeto);
+    }
+
+    public function eliminar($id) {
+        return $this->dao->eliminar($id);
     }
 
 }

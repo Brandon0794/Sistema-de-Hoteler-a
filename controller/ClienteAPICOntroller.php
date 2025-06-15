@@ -18,31 +18,56 @@ class ClientesApiController{
         //POST, GET, PUT DELETE
         switch ($metodo) 
         {
+
             case 'GET':
-                # code...
-                    $response = $this->dao->obtenerDatos();
-                    echo json_encode($response);
+                // Obtener todos
+                $clientes = $this->dao->obtenerDatos();
+                echo json_encode($clientes);
                 break;
 
             case 'POST':
-                # code...
-                # comentario
-                    $datos = json_decode(file_get_contents("php://input"), true);
+                // Insertar
+                $datos = json_decode(file_get_contents("php://input"), true);
 
-                                    
-                    $idCliente = $datos['idCliente'];
-                    $nombre = $datos['nombre'];
-                    $correo = $datos['correo'];
+                $nombre = $datos['nombre'];
+                $correo = $datos['correo'];
 
-                    $objeto = new ClientesH(null, $idCliente, $nombre, $correo);
+                $cliente = new ClienteH(null, $nombre, $correo);
+                $this->dao->insertar($cliente);
 
-                    $this->dao->insertar($objeto);
+                echo json_encode(["mensaje" => "Cliente insertado correctamente"]);
+                break;
 
+            case 'PUT':
+                // Modificar
+                $datos = json_decode(file_get_contents("php://input"), true);
 
-                    echo json_encode(["mensaje" => "Datos almacenados"]);
+                $idCliente = $datos['idCliente'];
+                $nombre = $datos['nombre'];
+                $correo = $datos['correo'];
 
+                $cliente = new ClienteH($idCliente, $nombre, $correo);
+                $this->dao->modificar($cliente);
+
+                echo json_encode(["mensaje" => "Cliente modificado correctamente"]);
+                break;
+
+            case 'DELETE':
+                // Eliminar
+                parse_str(file_get_contents("php://input"), $datos);
+                $idCliente = $datos['idCliente'];
+
+                $this->dao->eliminar($idCliente);
+
+                echo json_encode(["mensaje" => "Cliente eliminado correctamente"]);
+                break;
+
+            default:
+                http_response_code(405);
+                echo json_encode(["error" => "Método no permitido"]);
                 break;
         }
+        
     }
 
 
