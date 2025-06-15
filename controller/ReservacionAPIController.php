@@ -61,11 +61,14 @@ class ReservacionAPIController {
 
             case 'DELETE':
                 // Eliminar reservacion
-                parse_str(file_get_contents("php://input"), $datos);
-                $this->dao->eliminar($datos['idReservacion']);
-                echo json_encode(["mensaje" => "Reservacion eliminada"]);
-                break;
-
+            $datos = json_decode(file_get_contents("php://input"), true);
+    if (isset($datos['idReservacion'])) {
+        $this->dao->eliminar($datos['idReservacion']);
+        echo json_encode(["mensaje" => "Reservacion eliminada"]);
+    } else {
+        echo json_encode(["error" => "Falta el idReservacion"]);
+    }
+    break;
             default:
                 http_response_code(405);
                 echo json_encode(["error" => "Metodo no permitido"]);
