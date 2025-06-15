@@ -63,6 +63,7 @@ public function modificar(DetalleReservacionH $objeto) {
         $objeto->idHabitacion,
         $objeto->idDetalle
     ]);
+    #brandonnn
 }
 }
 
