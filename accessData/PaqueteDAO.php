@@ -10,67 +10,91 @@ class PaqueteDAO {
         $this->pdo = Conexion::conectar();
     }
 
+    // Obtener todos los paquetes
     public function obtenerDatos() {
-        $stmt = $this->pdo->query("SELECT * FROM paqueteh");
+        try {
+            $stmt = $this->pdo->query("SELECT * FROM paqueteh");
+            $result = [];
 
-        $result = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $result[] = new PaqueteH(
+                    $row['idPaquete'],
+                    $row['nombre'],
+                    $row['descripcion'],
+                    $row['precio']
+                );
+            }
 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new PaqueteH(
-                $row['idPaquete'],
-                $row['nombre'],
-                $row['descripcion'],
-                $row['precio']
-            );
+            return $result;
+        } catch (PDOException $e) {
+            return [];
         }
-
-        return $result;
     }
 
+    // Obtener un paquete por su ID
     public function obtenerPorId($id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM u484426513_ms225.paqueteh WHERE idPaquete = ?;");
-        $stmt->execute([$id]);
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM u484426513_ms225.paqueteh WHERE idPaquete = ?");
+            $stmt->execute([$id]);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return new PaqueteH(
-            $row['idPaquete'],
-            $row['nombre'],
-            $row['descripcion'],
-            $row['precio']
-        );
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                return new PaqueteH(
+                    $row['idPaquete'],
+                    $row['nombre'],
+                    $row['descripcion'],
+                    $row['precio']
+                );
+            }
+            return null;
+        } catch (PDOException $e) {
+            return null;
+        }
     }
 
+    // Insertar nuevo paquete
     public function insertar(PaqueteH $objeto) {
-        $sql = "INSERT INTO u484426513_ms225.paqueteh(nombre, descripcion, precio) VALUES (?, ?, ?)";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            $objeto->nombre,
-            $objeto->descripcion,
-            $objeto->precio
-        ]);
+        try {
+            $sql = "INSERT INTO u484426513_ms225.paqueteh(nombre, descripcion, precio) VALUES (?, ?, ?)";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                $objeto->nombre,
+                $objeto->descripcion,
+                $objeto->precio
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
-     //
+    // Eliminar paquete por ID
     public function eliminar($id) {
-    $sql = "DELETE FROM u484426513_ms225.paqueteh WHERE idPaquete = ?";
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute([$id]);
+        try {
+            $sql = "DELETE FROM u484426513_ms225.paqueteh WHERE idPaquete = ?";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([$id]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
+    // Modificar paquete existente
     public function modificar(PaqueteH $objeto) {
-    $sql = "UPDATE u484426513_ms225.paqueteh 
-            SET nombre = ?, descripcion = ?, precio = ?
-            WHERE idPaquete = ?";
-    
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute([
-        $objeto->nombre,
-        $objeto->descripcion,
-        $objeto->precio,
-        $objeto->idPaquete
-    ]);
+        try {
+            $sql = "UPDATE u484426513_ms225.paqueteh 
+                    SET nombre = ?, descripcion = ?, precio = ?
+                    WHERE idPaquete = ?";
+            
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                $objeto->nombre,
+                $objeto->descripcion,
+                $objeto->precio,
+                $objeto->idPaquete
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
-
 }
-
 ?>

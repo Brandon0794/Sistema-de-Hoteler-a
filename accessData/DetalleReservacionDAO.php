@@ -11,60 +11,83 @@ class DetalleReservacionDAO {
     }
 
     public function obtenerDatos() {
-        $stmt = $this->pdo->query("SELECT * FROM detalleReservacionh");
+        try {
+            $stmt = $this->pdo->query("SELECT * FROM detalleReservacionh");
+            $result = [];
 
-        $result = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $result[] = new DetalleReservacionH(
+                    $row['idDetalle'],
+                    $row['idReservacion'],
+                    $row['idHabitacion']
+                );
+            }
 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new DetalleReservacionH(
-                $row['idDetalle'],
-                $row['idReservacion'],
-                $row['idHabitacion']
-            );
+            return $result;
+        } catch (PDOException $e) {
+            return [];
         }
-
-        return $result;
     }
 
     public function obtenerPorId($id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM u484426513_ms225.detalleReservacionh WHERE idDetalle = ?;");
-        $stmt->execute([$id]);
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM u484426513_ms225.detalleReservacionh WHERE idDetalle = ?");
+            $stmt->execute([$id]);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return new DetalleReservacionH(
-            $row['idDetalle'],
-            $row['idReservacion'],
-            $row['idHabitacion']
-        );
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($row) {
+                return new DetalleReservacionH(
+                    $row['idDetalle'],
+                    $row['idReservacion'],
+                    $row['idHabitacion']
+                );
+            }
+
+            return null;
+        } catch (PDOException $e) {
+            return null;
+        }
     }
 
     public function insertar(DetalleReservacionH $objeto) {
-        $sql = "INSERT INTO u484426513_ms225.detalleReservacionh(idReservacion, idHabitacion) VALUES (?, ?)";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            $objeto->idReservacion,
-            $objeto->idHabitacion
-        ]);
+        try {
+            $sql = "INSERT INTO u484426513_ms225.detalleReservacionh(idReservacion, idHabitacion) VALUES (?, ?)";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                $objeto->idReservacion,
+                $objeto->idHabitacion
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
+
     public function eliminar($id) {
-    $sql = "DELETE FROM u484426513_ms225.detalleReservacionh WHERE idDetalle = ?";
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute([$id]);
-}
+        try {
+            $sql = "DELETE FROM u484426513_ms225.detalleReservacionh WHERE idDetalle = ?";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([$id]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 
-public function modificar(DetalleReservacionH $objeto) {
-    $sql = "UPDATE u484426513_ms225.detalleReservacionh 
-            SET idReservacion = ?, idHabitacion = ?
-            WHERE idDetalle = ?";
-    
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute([
-        $objeto->idReservacion,
-        $objeto->idHabitacion,
-        $objeto->idDetalle
-    ]);
-    #brandonnn
+    public function modificar(DetalleReservacionH $objeto) {
+        try {
+            $sql = "UPDATE u484426513_ms225.detalleReservacionh 
+                    SET idReservacion = ?, idHabitacion = ?
+                    WHERE idDetalle = ?";
+            
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                $objeto->idReservacion,
+                $objeto->idHabitacion,
+                $objeto->idDetalle
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
-}
-
 ?>

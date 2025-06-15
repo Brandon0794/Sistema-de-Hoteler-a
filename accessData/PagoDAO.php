@@ -10,72 +10,97 @@ class PagoDAO {
         $this->pdo = Conexion::conectar();
     }
 
+    // Obtener todos los pagos
     public function obtenerDatos() {
-        $stmt = $this->pdo->query("SELECT * FROM pagoh");
+        try {
+            $stmt = $this->pdo->query("SELECT * FROM pagoh");
+            $result = [];
 
-        $result = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $result[] = new PagoH(
+                    $row['idPago'],
+                    $row['idReservacion'],
+                    $row['monto'],
+                    $row['metodoPago'],
+                    $row['fechaPago']
+                );
+            }
 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new PagoH(
-                $row['idPago'],
-                $row['idReservacion'],
-                $row['monto'],
-                $row['metodoPago'],
-                $row['fechaPago']
-            );
+            return $result;
+        } catch (PDOException $e) {
+            return [];
         }
-
-        return $result;
     }
 
+    // Obtener un pago por su ID
     public function obtenerPorId($id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM u484426513_ms225.pagoh WHERE idPago = ?;");
-        $stmt->execute([$id]);
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM u484426513_ms225.pagoh WHERE idPago = ?");
+            $stmt->execute([$id]);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return new PagoH(
-            $row['idPago'],
-            $row['idReservacion'],
-            $row['monto'],
-            $row['metodoPago'],
-            $row['fechaPago']
-        );
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($row) {
+                return new PagoH(
+                    $row['idPago'],
+                    $row['idReservacion'],
+                    $row['monto'],
+                    $row['metodoPago'],
+                    $row['fechaPago']
+                );
+            }
+
+            return null;
+        } catch (PDOException $e) {
+            return null;
+        }
     }
 
+    // Insertar nuevo pago
     public function insertar(PagoH $objeto) {
-        $sql = "INSERT INTO u484426513_ms225.pagoh(idReservacion, monto, metodoPago, fechaPago) VALUES (?, ?, ?, ?)";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            $objeto->idReservacion,
-            $objeto->monto,
-            $objeto->metodoPago,
-            $objeto->fechaPago
-        ]);
+        try {
+            $sql = "INSERT INTO u484426513_ms225.pagoh(idReservacion, monto, metodoPago, fechaPago) VALUES (?, ?, ?, ?)";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                $objeto->idReservacion,
+                $objeto->monto,
+                $objeto->metodoPago,
+                $objeto->fechaPago
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
-    
-    //
+    // Eliminar pago por ID
     public function eliminar($id) {
-    $sql = "DELETE FROM u484426513_ms225.pagoh WHERE idPago = ?";
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute([$id]);
+        try {
+            $sql = "DELETE FROM u484426513_ms225.pagoh WHERE idPago = ?";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([$id]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
+    // Modificar pago existente
     public function modificar(PagoH $objeto) {
-    $sql = "UPDATE u484426513_ms225.pagoh 
-            SET idReservacion = ?, monto = ?, metodoPago = ?, fechaPago = ?
-            WHERE idPago = ?";
-    
-    $stmt = $this->pdo->prepare($sql);
-    return $stmt->execute([
-        $objeto->idReservacion,
-        $objeto->monto,
-        $objeto->metodoPago,
-        $objeto->fechaPago,
-        $objeto->idPago
-    ]);
+        try {
+            $sql = "UPDATE u484426513_ms225.pagoh 
+                    SET idReservacion = ?, monto = ?, metodoPago = ?, fechaPago = ?
+                    WHERE idPago = ?";
+            
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                $objeto->idReservacion,
+                $objeto->monto,
+                $objeto->metodoPago,
+                $objeto->fechaPago,
+                $objeto->idPago
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
-
 }
-
 ?>
