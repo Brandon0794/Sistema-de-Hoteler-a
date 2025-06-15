@@ -61,7 +61,8 @@ class HabitacionAPIController {
                 break;
 
             case 'DELETE':
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 // Validacion: se verifica que se haya recibido el id para eliminar
                 if (!isset($datos['idHabitacion'])) {

@@ -52,7 +52,8 @@ class HabitacionPaqueteAPIController {
                 break;
 
             case 'DELETE':
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 if (!isset($datos['idHabitacion']) || !isset($datos['idPaquete'])) {
                     echo json_encode(["error" => "Faltan datos para eliminar"]);

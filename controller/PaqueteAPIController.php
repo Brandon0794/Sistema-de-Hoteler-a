@@ -61,7 +61,8 @@ class PaqueteAPIController {
 
             case 'DELETE':
                 // Eliminar paquete
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
                 $idPaquete = $datos['idPaquete'];
 
                 $this->dao->eliminar($idPaquete);

@@ -57,7 +57,8 @@ class PagoAPIController {
                 break;
 
             case 'DELETE':
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
 
                 // Validar que se haya enviado el ID
                 if (!isset($datos['idPago'])) {

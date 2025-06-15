@@ -62,7 +62,8 @@ class UsuarioAPIController {
 
             case 'DELETE':
                 // Eliminar usuario
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
                 $this->dao->eliminar($datos['idUsuario']);
                 echo json_encode(["mensaje" => "Usuario eliminado"]);
                 break;

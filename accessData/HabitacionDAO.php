@@ -73,10 +73,12 @@ class HabitacionDAO {
     // Metodo para eliminar una habitacion por su ID
     public function eliminar($id) {
         try {
+            //consulta 
             $sql = "DELETE FROM u484426513_ms225.habitacionh WHERE idHabitacion = ?";
             $stmt = $this->pdo->prepare($sql);
             return $stmt->execute([$id]);
         } catch (PDOException $e) {
+            //re
             return false;
         }
     }

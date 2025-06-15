@@ -58,7 +58,8 @@ class TipoHabitacionAPIController {
 
             case 'DELETE':
                 // Eliminar registro
-                parse_str(file_get_contents("php://input"), $datos);
+               $datos = json_decode(file_get_contents("php://input"), true);
+
                 $this->dao->eliminar($datos['idTipo']);
                 echo json_encode(["mensaje" => "Tipo habitacion eliminado"]);
                 break;

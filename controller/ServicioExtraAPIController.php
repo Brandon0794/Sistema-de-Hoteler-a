@@ -58,7 +58,8 @@ class ServicioExtraAPIController {
 
             case 'DELETE':
                 // Eliminar servicio extra
-                parse_str(file_get_contents("php://input"), $datos);
+                $datos = json_decode(file_get_contents("php://input"), true);
+
                 $this->dao->eliminar($datos['idServicio']);
                 echo json_encode(["mensaje" => "Servicio extra eliminado"]);
                 break;
