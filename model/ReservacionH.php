@@ -6,7 +6,7 @@ class ReservacionH {
     public $fechaFin;
     public $estado;
 
-    public function __construct($idReservacion = null, $idCliente = null, $fechaInicio = null, $fechaFin = null, $estado = null) {
+    public function __construct($idReservacion, $idCliente, $fechaInicio, $fechaFin, $estado) {
         $this->idReservacion = $idReservacion;
         $this->idCliente = $idCliente;
         $this->fechaInicio = $fechaInicio;

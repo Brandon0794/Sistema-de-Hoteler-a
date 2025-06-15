@@ -6,7 +6,7 @@ class UsuarioH{
     public $rol;
     public $estado;
 
-    public function __construct($idUsuario = null, $nombreUsuario = null, $claveHash = null, $rol = 'admin', $estado = 'activo') {
+    public function __construct($idUsuario, $nombreUsuario, $claveHash, $rol = 'admin', $estado = 'activo') {
         $this->idUsuario = $idUsuario;
         $this->nombreUsuario = $nombreUsuario;
         $this->claveHash = $claveHash;

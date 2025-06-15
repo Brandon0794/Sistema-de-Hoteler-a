@@ -5,7 +5,7 @@ class PaqueteH {
     public $descripcion;
     public $precio;
 
-    public function __construct($idPaquete = null, $nombre = null, $descripcion = null, $precio = null) {
+    public function __construct($idPaquete, $nombre, $descripcion, $precio) {
         $this->idPaquete = $idPaquete;
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
