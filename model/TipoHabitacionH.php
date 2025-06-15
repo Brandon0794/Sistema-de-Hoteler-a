@@ -4,7 +4,7 @@ class TipoHabitacionH {
     public $nombre;
     public $descripcion;
 
-    public function __construct($idTipo = null, $nombre = null, $descripcion = null) {
+    public function __construct($idTipo, $nombre, $descripcion) {
         $this->idTipo = $idTipo;
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;

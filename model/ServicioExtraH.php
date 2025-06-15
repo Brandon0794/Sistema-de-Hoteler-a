@@ -4,7 +4,7 @@ class ServicioExtraH {
     public $nombre;
     public $descripcion;
 
-    public function __construct($idServicio = null, $nombre = null, $descripcion = null) {
+    public function __construct($idServicio, $nombre, $descripcion) {
         $this->idServicio = $idServicio;
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
