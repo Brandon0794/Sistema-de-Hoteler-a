@@ -38,19 +38,26 @@ class ClientesApiController{
                 echo json_encode(["mensaje" => "Cliente insertado correctamente"]);
                 break;
 
-            case 'PUT':
-                // Modificar
-                $datos = json_decode(file_get_contents("php://input"), true);
+           case 'PUT':
+    // Extraer datos como si fuera formulario: idCliente=1&nombre=...&correo=...
+    parse_str(file_get_contents("php://input"), $datos);
 
-                $idCliente = $datos['idCliente'];
-                $nombre = $datos['nombre'];
-                $correo = $datos['correo'];
+    // Validación previa
+    if (!isset($datos['idCliente']) || !isset($datos['nombre']) || !isset($datos['correo'])) {
+        echo json_encode(["error" => "Faltan datos para modificar"]);
+        return;
+    }
 
-                $cliente = new ClienteH($idCliente, $nombre, $correo);
-                $this->dao->modificar($cliente);
+    $idCliente = $datos['idCliente'];
+    $nombre = $datos['nombre'];
+    $correo = $datos['correo'];
 
-                echo json_encode(["mensaje" => "Cliente modificado correctamente"]);
-                break;
+    $cliente = new ClienteH($idCliente, $nombre, $correo);
+    $this->dao->modificar($cliente);
+
+    echo json_encode(["mensaje" => "Cliente modificado correctamente"]);
+    break;
+
 
             case 'DELETE':
                 // Eliminar
