@@ -41,11 +41,7 @@ class ClientesApiController{
 
                     echo json_encode(["mensaje" => "Datos almacenados"]);
 
-                break;   
-            case 'PUT'  
-            break;
-            case'DElETE'
-            break;
+                break;
         }
     }
 
