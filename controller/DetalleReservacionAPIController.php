@@ -15,12 +15,20 @@ class DetalleReservacionAPIController {
         $metodo = $_SERVER['REQUEST_METHOD'];
 
         switch ($metodo) {
+
             case 'GET':
+                // Obtener todos los detalles
                 echo json_encode($this->dao->obtenerDatos());
                 break;
 
             case 'POST':
+                // Insertar nuevo detalle
                 $datos = json_decode(file_get_contents("php://input"), true);
+
+                if (!isset($datos['idReservacion'], $datos['idHabitacion'])) {
+                    echo json_encode(["error" => "Faltan datos para insertar"]);
+                    return;
+                }
 
                 $objeto = new DetalleReservacionH(
                     null,
@@ -33,7 +41,13 @@ class DetalleReservacionAPIController {
                 break;
 
             case 'PUT':
+                // Modificar detalle existente
                 $datos = json_decode(file_get_contents("php://input"), true);
+
+                if (!isset($datos['idDetalle'], $datos['idReservacion'], $datos['idHabitacion'])) {
+                    echo json_encode(["error" => "Faltan datos para modificar"]);
+                    return;
+                }
 
                 $objeto = new DetalleReservacionH(
                     $datos['idDetalle'],
@@ -46,7 +60,13 @@ class DetalleReservacionAPIController {
                 break;
 
             case 'DELETE':
+                // Eliminar detalle
                 parse_str(file_get_contents("php://input"), $datos);
+
+                if (!isset($datos['idDetalle'])) {
+                    echo json_encode(["error" => "Falta idDetalle para eliminar"]);
+                    return;
+                }
 
                 $this->dao->eliminar($datos['idDetalle']);
                 echo json_encode(["mensaje" => "Detalle eliminado correctamente"]);
@@ -59,4 +79,3 @@ class DetalleReservacionAPIController {
         }
     }
 }
-?>

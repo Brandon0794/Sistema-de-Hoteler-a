@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../accessData/ConsumoDAO.php';
 require_once __DIR__ . '/../model/ConsumoH.php';
 
-class ConsumoAPIController {
+class ConsumoApiController {
 
     private $dao;
 
@@ -16,13 +16,21 @@ class ConsumoAPIController {
 
         switch ($metodo) {
             case 'GET':
-                echo json_encode($this->dao->obtenerDatos());
+                // Obtener todos los consumos
+                $consumos = $this->dao->obtenerDatos();
+                echo json_encode($consumos);
                 break;
 
             case 'POST':
+                // Insertar nuevo consumo
                 $datos = json_decode(file_get_contents("php://input"), true);
 
-                $objeto = new ConsumoH(
+                if (!isset($datos['idReservacion'], $datos['idServicio'], $datos['cantidad'], $datos['fecha'])) {
+                    echo json_encode(["error" => "Datos incompletos para insertar"]);
+                    return;
+                }
+
+                $nuevo = new ConsumoH(
                     null,
                     $datos['idReservacion'],
                     $datos['idServicio'],
@@ -30,14 +38,20 @@ class ConsumoAPIController {
                     $datos['fecha']
                 );
 
-                $this->dao->insertar($objeto);
+                $this->dao->insertar($nuevo);
                 echo json_encode(["mensaje" => "Consumo insertado correctamente"]);
                 break;
 
             case 'PUT':
-                $datos = json_decode(file_get_contents("php://input"), true);
+                // Modificar consumo
+                parse_str(file_get_contents("php://input"), $datos);
 
-                $objeto = new ConsumoH(
+                if (!isset($datos['idConsumo'], $datos['idReservacion'], $datos['idServicio'], $datos['cantidad'], $datos['fecha'])) {
+                    echo json_encode(["error" => "Datos incompletos para modificar"]);
+                    return;
+                }
+
+                $modificado = new ConsumoH(
                     $datos['idConsumo'],
                     $datos['idReservacion'],
                     $datos['idServicio'],
@@ -45,12 +59,18 @@ class ConsumoAPIController {
                     $datos['fecha']
                 );
 
-                $this->dao->modificar($objeto);
+                $this->dao->modificar($modificado);
                 echo json_encode(["mensaje" => "Consumo modificado correctamente"]);
                 break;
 
             case 'DELETE':
+                // Eliminar consumo
                 parse_str(file_get_contents("php://input"), $datos);
+
+                if (!isset($datos['idConsumo'])) {
+                    echo json_encode(["error" => "Falta el idConsumo para eliminar"]);
+                    return;
+                }
 
                 $this->dao->eliminar($datos['idConsumo']);
                 echo json_encode(["mensaje" => "Consumo eliminado correctamente"]);
@@ -63,4 +83,5 @@ class ConsumoAPIController {
         }
     }
 }
+
 ?>
