@@ -10,7 +10,7 @@ class MantenimientoHabitacionH {
         $this->idHabitacion = $idHabitacion;
         $this->descripcion = $descripcion;
         $this->fecha = $fecha;
-    }
+    }
 }
 
 ?>
