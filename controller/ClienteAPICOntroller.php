@@ -1,7 +1,8 @@
 <?php
-
+require_once __DIR__.'/../utils/validaciones.php';
 require_once __DIR__.'/../accessData/ClientesDAO.php';
 require_once __DIR__.'/../model/ClienteH.php';
+
 
 class ClientesApiController{
 
@@ -24,39 +25,51 @@ class ClientesApiController{
                 $clientes = $this->dao->obtenerDatos();
                 echo json_encode($clientes);
                 break;
+case 'POST':
+    // se obtiene el cuerpo del request en formato json
+    $datos = json_decode(file_get_contents("php://input"), true);
 
-            case 'POST':
-                // Insertar
-                $datos = json_decode(file_get_contents("php://input"), true);
-
-                $nombre = $datos['nombre'];
-                $correo = $datos['correo'];
-
-                $cliente = new ClienteH(null, $nombre, $correo);
-                $this->dao->insertar($cliente);
-
-                echo json_encode(["mensaje" => "Cliente insertado correctamente"]);
-                break;
-
-           case 'PUT':
-    // Extraer datos como si fuera formulario: idCliente=1&nombre=...&correo=...
-    parse_str(file_get_contents("php://input"), $datos);
-
-    // Validación previa
-    if (!isset($datos['idCliente']) || !isset($datos['nombre']) || !isset($datos['correo'])) {
-        echo json_encode(["error" => "Faltan datos para modificar"]);
+    // se validan los campos requeridos antes de insertar
+    $validacion = validarCampos($datos, ['nombre', 'correo']);
+    if ($validacion !== true) {
+        // si falta algun campo, se responde con un mensaje de error
+        echo json_encode(["error" => $validacion]);
         return;
     }
 
-    $idCliente = $datos['idCliente'];
-    $nombre = $datos['nombre'];
-    $correo = $datos['correo'];
+    // se crea un objeto cliente con id null porque es autoincremental
+    $cliente = new ClienteH(null, $datos['nombre'], $datos['correo']);
 
-    $cliente = new ClienteH($idCliente, $nombre, $correo);
+    // se llama al dao para insertar el cliente
+    $this->dao->insertar($cliente);
+
+    // se devuelve mensaje de exito
+    echo json_encode(["mensaje" => "cliente insertado correctamente"]);
+    break;
+
+
+    case 'PUT':
+    // se obtiene el cuerpo como si fuera un formulario codificado
+    parse_str(file_get_contents("php://input"), $datos);
+
+    // se validan los campos requeridos para modificar
+    $validacion = validarCampos($datos, ['idCliente', 'nombre', 'correo']);
+    if ($validacion !== true) {
+        // si falta algun campo, se responde con un mensaje de error
+        echo json_encode(["error" => $validacion]);
+        return;
+    }
+
+    // se crea el objeto cliente con los datos recibidos
+    $cliente = new ClienteH($datos['idCliente'], $datos['nombre'], $datos['correo']);
+
+    // se llama al dao para realizar la modificacion
     $this->dao->modificar($cliente);
 
-    echo json_encode(["mensaje" => "Cliente modificado correctamente"]);
+    // se devuelve mensaje de exito
+    echo json_encode(["mensaje" => "cliente modificado correctamente"]);
     break;
+
 
 
             case 'DELETE':
