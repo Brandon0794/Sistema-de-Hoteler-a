@@ -1,17 +1,21 @@
 <?php
 // === UsuarioAPIController.php ===
-require_once __DIR__.'/../accessData/UsuarioDAO.php';
-require_once __DIR__.'/../model/UsuarioH.php';
+require_once __DIR__ . '/../utils/validaciones.php';
+require_once __DIR__ . '/../accessData/UsuarioDAO.php';
+require_once __DIR__ . '/../model/UsuarioH.php';
 
-class UsuarioAPIController {
+class UsuarioAPIController
+{
 
     private $dao;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dao = new UsuarioDAO();
     }
 
-    public function manejarRequest() {
+    public function manejarRequest()
+    {
         $metodo = $_SERVER['REQUEST_METHOD'];
 
         switch ($metodo) {
@@ -22,10 +26,18 @@ class UsuarioAPIController {
                 break;
 
             case 'POST':
-                // Insertar nuevo usuario
+                // se obtiene el cuerpo del request en formato json
                 $datos = json_decode(file_get_contents("php://input"), true);
 
-                $objeto = new UsuarioH(
+                // se validan los campos requeridos antes de insertar
+                $validacion = validarCampos($datos, ['nombreUsuario', 'claveHash', 'rol', 'estado']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
+                    return;
+                }
+
+                // se crea el objeto usuario con id null porque es autoincremental
+                $usuario = new UsuarioH(
                     null,
                     $datos['nombreUsuario'],
                     $datos['claveHash'],
@@ -33,22 +45,24 @@ class UsuarioAPIController {
                     $datos['estado']
                 );
 
-                $this->dao->insertar($objeto);
-                echo json_encode(["mensaje" => "Usuario insertado"]);
+                // se inserta el usuario en la base de datos
+                $this->dao->insertar($usuario);
+                echo json_encode(["mensaje" => "usuario insertado"]);
                 break;
 
             case 'PUT':
-                // Actualizar usuario existente
-                $datos = json_decode(file_get_contents("php://input"), true);
+                // se obtiene el cuerpo como si fuera formulario codificado
+                parse_str(file_get_contents("php://input"), $datos);
 
-
-                // Validar campos requeridos
-                if (!isset($datos['idUsuario']) || !isset($datos['nombreUsuario']) || !isset($datos['claveHash']) || !isset($datos['rol']) || !isset($datos['estado'])) {
-                    echo json_encode(["error" => "Faltan datos para modificar"]);
+                // se validan los campos requeridos para modificar
+                $validacion = validarCampos($datos, ['idUsuario', 'nombreUsuario', 'claveHash', 'rol', 'estado']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
                     return;
                 }
 
-                $objeto = new UsuarioH(
+                // se crea el objeto usuario con los datos recibidos
+                $usuario = new UsuarioH(
                     $datos['idUsuario'],
                     $datos['nombreUsuario'],
                     $datos['claveHash'],
@@ -56,9 +70,11 @@ class UsuarioAPIController {
                     $datos['estado']
                 );
 
-                $this->dao->modificar($objeto);
-                echo json_encode(["mensaje" => "Usuario modificado"]);
+                // se actualiza el usuario en la base de datos
+                $this->dao->modificar($usuario);
+                echo json_encode(["mensaje" => "usuario modificado"]);
                 break;
+
 
             case 'DELETE':
                 // Eliminar usuario
@@ -75,4 +91,3 @@ class UsuarioAPIController {
         }
     }
 }
-?>

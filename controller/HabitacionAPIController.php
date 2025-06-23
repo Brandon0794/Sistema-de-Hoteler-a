@@ -1,17 +1,20 @@
 <?php
-
+require_once __DIR__ . '/../utils/validaciones.php';
 require_once __DIR__ . '/../accessData/HabitacionDAO.php';
 require_once __DIR__ . '/../model/HabitacionH.php';
 
-class HabitacionAPIController {
+class HabitacionAPIController
+{
 
     private $dao;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dao = new HabitacionDAO();
     }
 
-    public function manejarRequest() {
+    public function manejarRequest()
+    {
         $metodo = $_SERVER['REQUEST_METHOD'];
 
         switch ($metodo) {
@@ -21,14 +24,17 @@ class HabitacionAPIController {
                 break;
 
             case 'POST':
+                // se obtiene el cuerpo del request en formato json
                 $datos = json_decode(file_get_contents("php://input"), true);
 
-                // Validacion: se comprueba que todos los datos obligatorios vienen en la solicitud
-                if (!isset($datos['numero']) || !isset($datos['idTipo']) || !isset($datos['precio'])) {
-                    echo json_encode(["error" => "Faltan datos para insertar"]);
+                // se validan los campos requeridos antes de insertar
+                $validacion = validarCampos($datos, ['numero', 'idTipo', 'precio']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
                     return;
                 }
 
+                // se crea el objeto habitacion sin id porque es autoincremental
                 $habitacion = new HabitacionH(
                     null,
                     $datos['numero'],
@@ -37,18 +43,22 @@ class HabitacionAPIController {
                 );
 
                 $this->dao->insertar($habitacion);
-                echo json_encode(["mensaje" => "Habitacion insertada correctamente"]);
+                echo json_encode(["mensaje" => "habitacion insertada correctamente"]);
                 break;
 
-            case 'PUT':
-                $datos = json_decode(file_get_contents("php://input"), true);
 
-                // Validacion: se asegura que los campos requeridos existen antes de procesar
-                if (!isset($datos['idHabitacion']) || !isset($datos['numero']) || !isset($datos['idTipo']) || !isset($datos['precio'])) {
-                    echo json_encode(["error" => "Faltan datos para modificar"]);
+            case 'PUT':
+                // se obtiene el cuerpo como si fuera un formulario codificado
+                parse_str(file_get_contents("php://input"), $datos);
+
+                // se validan los campos requeridos para modificar
+                $validacion = validarCampos($datos, ['idHabitacion', 'numero', 'idTipo', 'precio']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
                     return;
                 }
 
+                // se crea el objeto habitacion con los datos recibidos
                 $habitacion = new HabitacionH(
                     $datos['idHabitacion'],
                     $datos['numero'],
@@ -57,7 +67,7 @@ class HabitacionAPIController {
                 );
 
                 $this->dao->modificar($habitacion);
-                echo json_encode(["mensaje" => "Habitacion modificada correctamente"]);
+                echo json_encode(["mensaje" => "habitacion modificada correctamente"]);
                 break;
 
             case 'DELETE':

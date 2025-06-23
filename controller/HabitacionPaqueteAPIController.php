@@ -1,17 +1,20 @@
 <?php
-
+require_once __DIR__ . '/../utils/validaciones.php';
 require_once __DIR__ . '/../accessData/HabitacionPaqueteDAO.php';
 require_once __DIR__ . '/../model/HabitacionPaqueteH.php';
 
-class HabitacionPaqueteAPIController {
+class HabitacionPaqueteAPIController
+{
 
     private $dao;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dao = new HabitacionPaqueteDAO();
     }
 
-    public function manejarRequest() {
+    public function manejarRequest()
+    {
         $metodo = $_SERVER['REQUEST_METHOD'];
 
         switch ($metodo) {
@@ -20,36 +23,56 @@ class HabitacionPaqueteAPIController {
                 break;
 
             case 'POST':
+                // se obtiene el cuerpo del request en formato json
                 $datos = json_decode(file_get_contents("php://input"), true);
 
-                $objeto = new HabitacionPaqueteH(
-                    $datos['idHabitacion'],
-                    $datos['idPaquete']
-                );
-
-                $this->dao->insertar($objeto);
-                echo json_encode(["mensaje" => "Registro insertado correctamente"]);
-                break;
-
-            case 'PUT':
-                // Validacion simple para evitar errores si faltan datos
-                $datos = json_decode(file_get_contents("php://input"), true);
-
-
-                if (!isset($datos['idHabitacionAnterior']) || !isset($datos['idPaqueteAnterior']) ||
-                    !isset($datos['idHabitacion']) || !isset($datos['idPaquete'])) {
-                    echo json_encode(["error" => "Faltan datos para modificar"]);
+                // se validan los campos requeridos
+                $validacion = validarCampos($datos, ['idHabitacion', 'idPaquete']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
                     return;
                 }
 
-                $objeto = new HabitacionPaqueteH(
+                // se crea el objeto habitacionpaquete
+                $habitacionPaquete = new HabitacionPaqueteH(
                     $datos['idHabitacion'],
                     $datos['idPaquete']
                 );
 
-                $this->dao->modificar($objeto, $datos['idHabitacionAnterior'], $datos['idPaqueteAnterior']);
-                echo json_encode(["mensaje" => "Registro modificado correctamente"]);
+                // se inserta el nuevo registro
+                $this->dao->insertar($habitacionPaquete);
+                echo json_encode(["mensaje" => "registro insertado correctamente"]);
                 break;
+
+
+            case 'PUT':
+                // se obtiene el cuerpo como si fuera un formulario codificado
+                parse_str(file_get_contents("php://input"), $datos);
+
+                // se validan los campos requeridos para modificar
+                $validacion = validarCampos($datos, [
+                    'idHabitacionAnterior',
+                    'idPaqueteAnterior',
+                    'idHabitacion',
+                    'idPaquete'
+                ]);
+
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
+                    return;
+                }
+
+                // se crea el objeto habitacionpaquete con los nuevos datos
+                $habitacionPaquete = new HabitacionPaqueteH(
+                    $datos['idHabitacion'],
+                    $datos['idPaquete']
+                );
+
+                // se realiza la modificacion usando los valores anteriores como referencia
+                $this->dao->modificar($habitacionPaquete, $datos['idHabitacionAnterior'], $datos['idPaqueteAnterior']);
+                echo json_encode(["mensaje" => "registro modificado correctamente"]);
+                break;
+
 
             case 'DELETE':
                 $datos = json_decode(file_get_contents("php://input"), true);
@@ -71,4 +94,3 @@ class HabitacionPaqueteAPIController {
         }
     }
 }
-?>

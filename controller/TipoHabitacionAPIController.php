@@ -1,5 +1,6 @@
 <?php
 // === TipoHabitacionAPIController.php ===
+require_once __DIR__.'/../utils/validaciones.php';
 require_once __DIR__.'/../accessData/TipoHabitacionDAO.php';
 require_once __DIR__.'/../model/TipoHabitacionH.php';
 
@@ -22,39 +23,50 @@ class TipoHabitacionAPIController {
                 break;
 
             case 'POST':
-                // Insertar nuevo registro
-                $datos = json_decode(file_get_contents("php://input"), true);
+    // se obtiene el cuerpo del request en formato json
+    $datos = json_decode(file_get_contents("php://input"), true);
 
-                $objeto = new TipoHabitacionH(
-                    null,
-                    $datos['nombre'],
-                    $datos['descripcion']
-                );
+    // se validan los campos requeridos antes de insertar
+    $validacion = validarCampos($datos, ['nombre', 'descripcion']);
+    if ($validacion !== true) {
+        echo json_encode(["error" => $validacion]);
+        return;
+    }
 
-                $this->dao->insertar($objeto);
-                echo json_encode(["mensaje" => "Tipo habitacion insertado"]);
-                break;
+    // se crea el objeto tipo habitacion con id null porque es autoincremental
+    $tipo = new TipoHabitacionH(
+        null,
+        $datos['nombre'],
+        $datos['descripcion']
+    );
 
-            case 'PUT':
-                // Actualizar registro existente
-                $datos = json_decode(file_get_contents("php://input"), true);
+    // se inserta el nuevo tipo de habitacion en la base de datos
+    $this->dao->insertar($tipo);
+    echo json_encode(["mensaje" => "tipo habitacion insertado"]);
+    break;
 
+case 'PUT':
+    // se obtiene el cuerpo como si fuera formulario codificado
+    parse_str(file_get_contents("php://input"), $datos);
 
-                // Validar campos requeridos
-                if (!isset($datos['idTipo']) || !isset($datos['nombre']) || !isset($datos['descripcion'])) {
-                    echo json_encode(["error" => "Faltan datos para modificar"]);
-                    return;
-                }
+    // se validan los campos requeridos para modificar
+    $validacion = validarCampos($datos, ['idTipo', 'nombre', 'descripcion']);
+    if ($validacion !== true) {
+        echo json_encode(["error" => $validacion]);
+        return;
+    }
 
-                $objeto = new TipoHabitacionH(
-                    $datos['idTipo'],
-                    $datos['nombre'],
-                    $datos['descripcion']
-                );
+    // se crea el objeto tipo habitacion con los datos recibidos
+    $tipo = new TipoHabitacionH(
+        $datos['idTipo'],
+        $datos['nombre'],
+        $datos['descripcion']
+    );
 
-                $this->dao->modificar($objeto);
-                echo json_encode(["mensaje" => "Tipo habitacion modificado"]);
-                break;
+    // se actualiza el tipo de habitacion en la base de datos
+    $this->dao->modificar($tipo);
+    echo json_encode(["mensaje" => "tipo habitacion modificado"]);
+    break;
 
             case 'DELETE':
                 // Eliminar registro

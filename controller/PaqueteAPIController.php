@@ -1,18 +1,21 @@
 <?php
 // Archivo: controller/PaqueteAPIController.php
+require_once __DIR__ . '/../utils/validaciones.php';
+require_once __DIR__ . '/../accessData/PaqueteDAO.php';
+require_once __DIR__ . '/../model/PaqueteH.php';
 
-require_once __DIR__.'/../accessData/PaqueteDAO.php';
-require_once __DIR__.'/../model/PaqueteH.php';
-
-class PaqueteAPIController {
+class PaqueteAPIController
+{
 
     private $dao;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dao = new PaqueteDAO();
     }
 
-    public function manejarRequest() {
+    public function manejarRequest()
+    {
         $metodo = $_SERVER['REQUEST_METHOD'];
 
         switch ($metodo) {
@@ -23,9 +26,17 @@ class PaqueteAPIController {
                 break;
 
             case 'POST':
-                // Insertar nuevo paquete
+                // se obtiene el cuerpo del request en formato json
                 $datos = json_decode(file_get_contents("php://input"), true);
 
+                // se validan los campos requeridos antes de insertar
+                $validacion = validarCampos($datos, ['nombre', 'descripcion', 'precio']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
+                    return;
+                }
+
+                // se crea el objeto paquete con id null porque es autoincremental
                 $paquete = new PaqueteH(
                     null,
                     $datos['nombre'],
@@ -33,21 +44,23 @@ class PaqueteAPIController {
                     $datos['precio']
                 );
 
+                // se llama al dao para insertar el paquete
                 $this->dao->insertar($paquete);
-                echo json_encode(["mensaje" => "Paquete insertado correctamente"]);
+                echo json_encode(["mensaje" => "paquete insertado correctamente"]);
                 break;
 
             case 'PUT':
-                // Actualizar paquete
-                $datos = json_decode(file_get_contents("php://input"), true);
+                // se obtiene el cuerpo como si fuera un formulario codificado
+                parse_str(file_get_contents("php://input"), $datos);
 
-
-                // Validar que existan todos los datos requeridos
-                if (!isset($datos['idPaquete']) || !isset($datos['nombre']) || !isset($datos['descripcion']) || !isset($datos['precio'])) {
-                    echo json_encode(["error" => "Faltan datos para modificar"]);
+                // se validan los campos requeridos para modificar
+                $validacion = validarCampos($datos, ['idPaquete', 'nombre', 'descripcion', 'precio']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
                     return;
                 }
 
+                // se crea el objeto paquete con los datos recibidos
                 $paquete = new PaqueteH(
                     $datos['idPaquete'],
                     $datos['nombre'],
@@ -55,8 +68,9 @@ class PaqueteAPIController {
                     $datos['precio']
                 );
 
+                // se llama al dao para realizar la modificacion
                 $this->dao->modificar($paquete);
-                echo json_encode(["mensaje" => "Paquete modificado correctamente"]);
+                echo json_encode(["mensaje" => "paquete modificado correctamente"]);
                 break;
 
             case 'DELETE':
@@ -76,5 +90,3 @@ class PaqueteAPIController {
         }
     }
 }
-
-?>

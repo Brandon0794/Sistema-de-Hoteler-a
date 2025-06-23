@@ -1,17 +1,21 @@
 <?php
 // === ServicioExtraApiController.php ===
-require_once __DIR__.'/../accessData/ServicioExtraDAO.php';
-require_once __DIR__.'/../model/ServicioExtraH.php';
+require_once __DIR__ . '/../utils/validaciones.php';
+require_once __DIR__ . '/../accessData/ServicioExtraDAO.php';
+require_once __DIR__ . '/../model/ServicioExtraH.php';
 
-class ServicioExtraAPIController {
+class ServicioExtraAPIController
+{
 
     private $dao;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dao = new ServicioExtraDAO();
     }
 
-    public function manejarRequest() {
+    public function manejarRequest()
+    {
         $metodo = $_SERVER['REQUEST_METHOD'];
 
         switch ($metodo) {
@@ -22,39 +26,51 @@ class ServicioExtraAPIController {
                 break;
 
             case 'POST':
-                // Insertar nuevo servicio extra
+                // se obtiene el cuerpo del request en formato json
                 $datos = json_decode(file_get_contents("php://input"), true);
 
-                $objeto = new ServicioExtraH(
+                // se validan los campos requeridos antes de insertar
+                $validacion = validarCampos($datos, ['nombre', 'descripcion']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
+                    return;
+                }
+
+                // se crea el objeto servicio extra con id null porque es autoincremental
+                $servicio = new ServicioExtraH(
                     null,
                     $datos['nombre'],
                     $datos['descripcion']
                 );
 
-                $this->dao->insertar($objeto);
-                echo json_encode(["mensaje" => "Servicio extra insertado"]);
+                // se inserta en la base de datos
+                $this->dao->insertar($servicio);
+                echo json_encode(["mensaje" => "servicio extra insertado"]);
                 break;
 
             case 'PUT':
-                // Actualizar servicio extra
-                $datos = json_decode(file_get_contents("php://input"), true);
+                // se obtiene el cuerpo como si fuera formulario codificado
+                parse_str(file_get_contents("php://input"), $datos);
 
-
-                // Validar que existan los campos requeridos
-                if (!isset($datos['idServicio']) || !isset($datos['nombre']) || !isset($datos['descripcion'])) {
-                    echo json_encode(["error" => "Faltan datos para modificar"]);
+                // se validan los campos requeridos para modificar
+                $validacion = validarCampos($datos, ['idServicio', 'nombre', 'descripcion']);
+                if ($validacion !== true) {
+                    echo json_encode(["error" => $validacion]);
                     return;
                 }
 
-                $objeto = new ServicioExtraH(
+                // se crea el objeto servicio extra con los datos recibidos
+                $servicio = new ServicioExtraH(
                     $datos['idServicio'],
                     $datos['nombre'],
                     $datos['descripcion']
                 );
 
-                $this->dao->modificar($objeto);
-                echo json_encode(["mensaje" => "Servicio extra modificado"]);
+                // se modifica en la base de datos
+                $this->dao->modificar($servicio);
+                echo json_encode(["mensaje" => "servicio extra modificado"]);
                 break;
+
 
             case 'DELETE':
                 // Eliminar servicio extra
@@ -71,4 +87,3 @@ class ServicioExtraAPIController {
         }
     }
 }
-?>

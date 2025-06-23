@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__.'/../utils/validaciones.php';
 require_once __DIR__ . '/../accessData/ConsumoDAO.php';
 require_once __DIR__ . '/../model/ConsumoH.php';
 
@@ -21,48 +21,56 @@ class ConsumoApiController {
                 echo json_encode($consumos);
                 break;
 
-            case 'POST':
-                // Insertar nuevo consumo
-                $datos = json_decode(file_get_contents("php://input"), true);
+           require_once __DIR__ . '/../utils/Validaciones.php'; // se importa el validador
 
-                if (!isset($datos['idReservacion'], $datos['idServicio'], $datos['cantidad'], $datos['fecha'])) {
-                    echo json_encode(["error" => "Datos incompletos para insertar"]);
-                    return;
-                }
+case 'POST':
+    // se obtiene el cuerpo del request en formato json
+    $datos = json_decode(file_get_contents("php://input"), true);
 
-                $nuevo = new ConsumoH(
-                    null,
-                    $datos['idReservacion'],
-                    $datos['idServicio'],
-                    $datos['cantidad'],
-                    $datos['fecha']
-                );
+    // se validan los campos requeridos antes de insertar
+    $validacion = validarCampos($datos, ['idReservacion', 'idServicio', 'cantidad', 'fecha']);
+    if ($validacion !== true) {
+        echo json_encode(["error" => $validacion]);
+        return;
+    }
 
-                $this->dao->insertar($nuevo);
-                echo json_encode(["mensaje" => "Consumo insertado correctamente"]);
-                break;
+    // se crea el objeto consumo con id null porque es autoincremental
+    $nuevo = new ConsumoH(
+        null,
+        $datos['idReservacion'],
+        $datos['idServicio'],
+        $datos['cantidad'],
+        $datos['fecha']
+    );
 
-            case 'PUT':
-                // Modificar consumo
-                $datos = json_decode(file_get_contents("php://input"), true);
+    $this->dao->insertar($nuevo);
+    echo json_encode(["mensaje" => "Consumo insertado correctamente"]);
+    break;
 
 
-                if (!isset($datos['idConsumo'], $datos['idReservacion'], $datos['idServicio'], $datos['cantidad'], $datos['fecha'])) {
-                    echo json_encode(["error" => "Datos incompletos para modificar"]);
-                    return;
-                }
+case 'PUT':
+    // se obtiene el cuerpo como si fuera formulario codificado
+    parse_str(file_get_contents("php://input"), $datos);
 
-                $modificado = new ConsumoH(
-                    $datos['idConsumo'],
-                    $datos['idReservacion'],
-                    $datos['idServicio'],
-                    $datos['cantidad'],
-                    $datos['fecha']
-                );
+    // se validan los campos requeridos para modificar
+    $validacion = validarCampos($datos, ['idConsumo', 'idReservacion', 'idServicio', 'cantidad', 'fecha']);
+    if ($validacion !== true) {
+        echo json_encode(["error" => $validacion]);
+        return;
+    }
 
-                $this->dao->modificar($modificado);
-                echo json_encode(["mensaje" => "Consumo modificado correctamente"]);
-                break;
+    // se crea el objeto consumo con los datos recibidos
+    $modificado = new ConsumoH(
+        $datos['idConsumo'],
+        $datos['idReservacion'],
+        $datos['idServicio'],
+        $datos['cantidad'],
+        $datos['fecha']
+    );
+
+    $this->dao->modificar($modificado);
+    echo json_encode(["mensaje" => "Consumo modificado correctamente"]);
+    break;
 
             case 'DELETE':
                 // Eliminar consumo
