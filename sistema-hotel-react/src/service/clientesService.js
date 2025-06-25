@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 // Ajusta esta URL a tu ruta real de la API PHP
-const API_URL = 'http://localhost/Sistema-de-Hoteler-a/api/cliente.php';
+const API_URL = 'http://localhost/Sistema-de-Hoteler-a/api/clientes.php';
 
 const clientesService = {
 
