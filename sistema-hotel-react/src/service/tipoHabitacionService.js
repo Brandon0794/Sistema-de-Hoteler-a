@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:80/Sistema-de-Hoteler-a/api/tipoHabitacion.php';
+const API_URL = 'http://localhost:80/2025/Sistema-de-Hoteler-a/api/tipoHabitacion.php';
 
 const tipoHabitacionService = {
   // Obtener todos los tipos de habitación

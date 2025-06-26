@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:80/Sistema-de-Hoteler-a/api/usuario.php';
+const API_URL = 'http://localhost:80/2025/Sistema-de-Hoteler-a/api/usuario.php';
 
 const usuarioService = {
 
