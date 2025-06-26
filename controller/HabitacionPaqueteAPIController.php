@@ -46,18 +46,23 @@ class HabitacionPaqueteAPIController
 
 
             case 'PUT':
-                // se obtiene el cuerpo como si fuera un formulario codificado
-                parse_str(file_get_contents("php://input"), $datos);
+                // se obtiene el cuerpo en formato JSON
+                $datos = json_decode(file_get_contents("php://input"), true);
 
-                // se validan los campos requeridos para modificar
+                // validamos que sea un array y luego los campos requeridos para modificar
+                if (!is_array($datos)) {
+                    http_response_code(400);
+                    echo json_encode(["error" => "JSON mal formado"]);
+                    return;
+                }
                 $validacion = validarCampos($datos, [
                     'idHabitacionAnterior',
                     'idPaqueteAnterior',
                     'idHabitacion',
                     'idPaquete'
                 ]);
-
                 if ($validacion !== true) {
+                    http_response_code(400);
                     echo json_encode(["error" => $validacion]);
                     return;
                 }
@@ -69,20 +74,21 @@ class HabitacionPaqueteAPIController
                 );
 
                 // se realiza la modificacion usando los valores anteriores como referencia
-                $this->dao->modificar($habitacionPaquete, $datos['idHabitacionAnterior'], $datos['idPaqueteAnterior']);
+                $this->dao->modificar(
+                    $habitacionPaquete,
+                    $datos['idHabitacionAnterior'],
+                    $datos['idPaqueteAnterior']
+                );
                 echo json_encode(["mensaje" => "registro modificado correctamente"]);
                 break;
 
-
             case 'DELETE':
                 $datos = json_decode(file_get_contents("php://input"), true);
-
-
-                if (!isset($datos['idHabitacion']) || !isset($datos['idPaquete'])) {
+                if (!isset($datos['idHabitacion'], $datos['idPaquete'])) {
+                    http_response_code(400);
                     echo json_encode(["error" => "Faltan datos para eliminar"]);
                     return;
                 }
-
                 $this->dao->eliminar($datos['idHabitacion'], $datos['idPaquete']);
                 echo json_encode(["mensaje" => "Registro eliminado correctamente"]);
                 break;
