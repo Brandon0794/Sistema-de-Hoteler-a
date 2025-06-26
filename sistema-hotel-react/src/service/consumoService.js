@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Ajusta esta URL a tu ruta real de la API PHP
-const API_URL = 'http://localhost:80/2025/React/Sistema-de-Hoteler-a/api/consumo.php';
+const API_URL = 'http://localhost:80/2025/Sistema-de-Hoteler-a/api/consumo.php';
 
 const consumoService = {
 
@@ -53,16 +53,12 @@ const consumoService = {
 
   // Eliminar un consumo por ID
   remove: async (idConsumo) => {
-    try {
-      const response = await axios.delete(API_URL, {
-        data: { idConsumo }
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error al eliminar consumo:', error);
-      throw error;
-    }
+    return axios.delete(API_URL, {
+      headers: { "Content-Type": "application/json" },
+      data: { idConsumo }
+    }).then(res => res.data);
   },
+
 };
 
 export default consumoService;
