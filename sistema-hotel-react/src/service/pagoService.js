@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // URL del endpoint de tu API para pagos
-const API_URL = 'http://localhost/Sistema-de-Hoteler-a/api/pago.php';
+const API_URL = 'http://localhost:80/Sistema-de-Hoteler-a/api/pago.php';
 
 const pagoService = {
   // Obtener todos los pagos

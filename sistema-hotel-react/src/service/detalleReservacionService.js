@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/Sistema-de-Hoteler-a/api/detalleReservacion.php';
+const API_URL = 'http://localhost:80/Sistema-de-Hoteler-a/api/detalleReservacion.php';
 
 const detalleReservacionService = {
 

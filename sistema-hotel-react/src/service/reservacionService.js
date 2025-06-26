@@ -1,7 +1,7 @@
 // src/service/reservacionService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost/Sistema-de-Hoteler-a/api/reservacion.php';
+const API_URL = 'http://localhost:80/Sistema-de-Hoteler-a/api/reservacion.php';
 
 const reservacionService = {
   // Obtener todas las reservaciones
