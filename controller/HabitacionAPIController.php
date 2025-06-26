@@ -48,27 +48,44 @@ class HabitacionAPIController
 
 
             case 'PUT':
-                // se obtiene el cuerpo como si fuera un formulario codificado
-                parse_str(file_get_contents("php://input"), $datos);
+                // 1) Leemos el raw body
+                $raw = file_get_contents("php://input");
+                error_log("PUT Habitación recibe: $raw");
 
-                // se validan los campos requeridos para modificar
+                // 2) Decodificamos JSON
+                $datos = json_decode($raw, true);
+                if (!is_array($datos)) {
+                    http_response_code(400);
+                    echo json_encode(["error" => "JSON mal formado"]);
+                    return;
+                }
+
+                // 3) Validamos campos
                 $validacion = validarCampos($datos, ['idHabitacion', 'numero', 'idTipo', 'precio']);
                 if ($validacion !== true) {
+                    http_response_code(400);
                     echo json_encode(["error" => $validacion]);
                     return;
                 }
 
-                // se crea el objeto habitacion con los datos recibidos
+                // 4) Creamos el objeto y llamamos al DAO
                 $habitacion = new HabitacionH(
                     $datos['idHabitacion'],
                     $datos['numero'],
                     $datos['idTipo'],
                     $datos['precio']
                 );
+                $ok = $this->dao->modificar($habitacion);
 
-                $this->dao->modificar($habitacion);
-                echo json_encode(["mensaje" => "habitacion modificada correctamente"]);
+                // 5) Respondemos según el resultado
+                if ($ok) {
+                    echo json_encode(["mensaje" => "Habitación modificada correctamente"]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["error" => "Error interno al modificar habitación"]);
+                }
                 break;
+
 
             case 'DELETE':
                 $datos = json_decode(file_get_contents("php://input"), true);

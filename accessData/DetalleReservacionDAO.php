@@ -1,16 +1,22 @@
 <?php
-require_once __DIR__.'/../misc/Conexion.php';
-require_once __DIR__.'/../model/DetalleReservacionH.php';
+require_once __DIR__ . '/../misc/Conexion.php';
+require_once __DIR__ . '/../model/DetalleReservacionH.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-class DetalleReservacionDAO {
+class DetalleReservacionDAO
+{
 
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->pdo = Conexion::conectar();
     }
 
-    public function obtenerDatos() {
+    public function obtenerDatos()
+    {
         try {
             $stmt = $this->pdo->query("SELECT * FROM detalleReservacionh");
             $result = [];
@@ -29,7 +35,8 @@ class DetalleReservacionDAO {
         }
     }
 
-    public function obtenerPorId($id) {
+    public function obtenerPorId($id)
+    {
         try {
             $stmt = $this->pdo->prepare("SELECT * FROM u484426513_ms225.detalleReservacionh WHERE idDetalle = ?");
             $stmt->execute([$id]);
@@ -50,20 +57,27 @@ class DetalleReservacionDAO {
         }
     }
 
-    public function insertar(DetalleReservacionH $objeto) {
+    public function insertar(DetalleReservacionH $obj)
+    {
         try {
-            $sql = "INSERT INTO u484426513_ms225.detalleReservacionh(idReservacion, idHabitacion) VALUES (?, ?)";
+            $sql = "INSERT INTO detalle_reservacion (idReservacion, idHabitacion) VALUES (?, ?)";
             $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute([
-                $objeto->idReservacion,
-                $objeto->idHabitacion
+            $ok = $stmt->execute([
+                $obj->idReservacion,
+                $obj->idHabitacion
             ]);
+            // cuántas filas afectó
+            error_log("DAO insertar DetalleReservacion, rowCount: " . $stmt->rowCount());
+            return $ok;
         } catch (PDOException $e) {
+            error_log("Error en DAO insertar DetalleReservacion: " . $e->getMessage());
             return false;
         }
     }
 
-    public function eliminar($id) {
+
+    public function eliminar($id)
+    {
         try {
             $sql = "DELETE FROM u484426513_ms225.detalleReservacionh WHERE idDetalle = ?";
             $stmt = $this->pdo->prepare($sql);
@@ -73,12 +87,13 @@ class DetalleReservacionDAO {
         }
     }
 
-    public function modificar(DetalleReservacionH $objeto) {
+    public function modificar(DetalleReservacionH $objeto)
+    {
         try {
             $sql = "UPDATE u484426513_ms225.detalleReservacionh 
                     SET idReservacion = ?, idHabitacion = ?
                     WHERE idDetalle = ?";
-            
+
             $stmt = $this->pdo->prepare($sql);
             return $stmt->execute([
                 $objeto->idReservacion,
@@ -90,4 +105,3 @@ class DetalleReservacionDAO {
         }
     }
 }
-?>

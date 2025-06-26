@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:80/2025/Sistema-de-Hoteler-a/api/detalleReservacion.php';
+const API_URL =
+  "http://localhost:80/2025/Sistema-de-Hoteler-a/api/detalleReservacion.php";
 
 const detalleReservacionService = {
-
   getAll: async () => {
     try {
       const response = await axios.get(API_URL);
@@ -27,7 +27,9 @@ const detalleReservacionService = {
   create: async ({ idReservacion, idHabitacion }) => {
     try {
       const payload = { idReservacion, idHabitacion };
-      const response = await axios.post(API_URL, payload);
+      const response = await axios.post(API_URL, payload, {
+        headers: { "Content-Type": "application/json" }
+      });
       return response.data;
     } catch (error) {
       console.error('Error al crear detalle:', error);
@@ -38,7 +40,9 @@ const detalleReservacionService = {
   update: async ({ idDetalle, idReservacion, idHabitacion }) => {
     try {
       const payload = { idDetalle, idReservacion, idHabitacion };
-      const response = await axios.put(API_URL, payload);
+      const response = await axios.put(API_URL, payload, {
+        headers: { "Content-Type": "application/json" }
+      });
       return response.data;
     } catch (error) {
       console.error('Error al actualizar detalle:', error);
@@ -49,6 +53,7 @@ const detalleReservacionService = {
   remove: async (idDetalle) => {
     try {
       const response = await axios.delete(API_URL, {
+        headers: { "Content-Type": "application/json" },
         data: { idDetalle }
       });
       return response.data;
@@ -57,7 +62,6 @@ const detalleReservacionService = {
       throw error;
     }
   },
-
 };
 
 export default detalleReservacionService;

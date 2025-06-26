@@ -31,7 +31,9 @@ const habitacionService = {
   create: async ({ numero, idTipo, precio }) => {
     try {
       const payload = { numero, idTipo, precio };
-      const response = await axios.post(API_URL, payload);
+      const response = await axios.post(API_URL, payload, {
+        headers: { 'Content-Type': 'application/json' }
+      });
       return response.data;
     } catch (error) {
       console.error('Error al crear habitación:', error);
@@ -43,7 +45,9 @@ const habitacionService = {
   update: async ({ idHabitacion, numero, idTipo, precio }) => {
     try {
       const payload = { idHabitacion, numero, idTipo, precio };
-      const response = await axios.put(API_URL, payload);
+      const response = await axios.put(API_URL, payload, {
+        headers: { 'Content-Type': 'application/json' }
+      });
       return response.data;
     } catch (error) {
       console.error('Error al actualizar habitación:', error);
@@ -55,6 +59,7 @@ const habitacionService = {
   remove: async (idHabitacion) => {
     try {
       const response = await axios.delete(API_URL, {
+        headers: { 'Content-Type': 'application/json' },
         data: { idHabitacion }
       });
       return response.data;
