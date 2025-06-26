@@ -1,11 +1,66 @@
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 2rem;
+    background: linear-gradient(90deg, #a5d6a7, #6cade6);
+    /* Turquesa a lila */
+    color: white;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 1000;
+    box-sizing: border-box;
+    /* ← importante para padding */
+}
+
+.nav-left .nav-items {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-items li a {
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.nav-items li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Logo + Título */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.nav-right img {
+    width: 36px;
+    height: 36px;
+}
+
+.brand-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* Estilo Módulos personalizado */
 .modulos-menu {
     position: relative;
     cursor: pointer;
-    display: inline-block;
     padding: 0.5rem 1.2rem;
     border-radius: 8px;
     background-color: #0ccab4;
-    color: rgb(254, 255, 254);
+    color: #ffffff;
     font-weight: bold;
     transition: background 0.3s ease;
 }
@@ -17,20 +72,18 @@
 .dropdown {
     position: absolute;
     top: calc(100% + 12px);
-    /* mejor alineado bajo el botón Módulos */
     left: 50%;
     transform: translateX(-50%);
     background: linear-gradient(135deg, #e0f7fa, #e0f2f1);
     border-radius: 10px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     padding: 0.5rem 0;
-    list-style: none;
     width: 250px;
-    z-index: 999;
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
     animation: dropdownFade 0.25s ease-in-out;
+    z-index: 999;
 }
 
 .dropdown li {
@@ -39,7 +92,6 @@
 
 .dropdown a {
     display: block;
-    /*EL WIT MODIFICA COMO SE VE CUANDO SE PASA POR ENCIMA PARA NO SOBRE PONER*/
     width: 80%;
     padding: 0.7rem 1rem;
     background-color: transparent;
@@ -53,16 +105,8 @@
 
 .dropdown a:hover {
     background-color: #a5d6a7;
-    /* verde lima suave */
     color: #00332d;
     transform: translateX(6px);
-}
-
-/* Estilo opcional si deseas una transición de salida */
-.dropdown-exit {
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.2s ease-out;
 }
 
 @keyframes dropdownFade {
