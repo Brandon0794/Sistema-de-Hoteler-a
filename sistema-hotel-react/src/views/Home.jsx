@@ -4,12 +4,15 @@ import { Link } from "react-router-dom";
 import "./Home.css";
 import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg"; // funciona con Vite directamente
+import Header from "../components/Header.jsx";  // Importa el componente Header
+
 
 function Home() {
   console.log("Home cargado");
 
   return (
     <div className="home-container">
+        <Header /> {/* <-- Aquí lo estás usando */}
       <div className="logo-bar">
         <a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer">
           <img src={viteLogo} alt="Vite logo" className="logo-img" />

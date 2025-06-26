@@ -1,0 +1,78 @@
+.modulos-menu {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    background-color: #0ccab4;
+    color: rgb(254, 255, 254);
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.modulos-menu:hover {
+    background-color: #009688;
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    /* mejor alineado bajo el botón Módulos */
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #e0f7fa, #e0f2f1);
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem 0;
+    list-style: none;
+    width: 250px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    animation: dropdownFade 0.25s ease-in-out;
+}
+
+.dropdown li {
+    width: 100%;
+}
+
+.dropdown a {
+    display: block;
+    /*EL WIT MODIFICA COMO SE VE CUANDO SE PASA POR ENCIMA PARA NO SOBRE PONER*/
+    width: 80%;
+    padding: 0.7rem 1rem;
+    background-color: transparent;
+    color: #004d40;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: left;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.dropdown a:hover {
+    background-color: #a5d6a7;
+    /* verde lima suave */
+    color: #00332d;
+    transform: translateX(6px);
+}
+
+/* Estilo opcional si deseas una transición de salida */
+.dropdown-exit {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s ease-out;
+}
+
+@keyframes dropdownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
